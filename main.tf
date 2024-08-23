@@ -52,7 +52,7 @@ module "autoscaling" {
   instance_type       = var.instance_type
 }
 
-module "alb" "blog_alb" {
+module "blog_alb" {
   source = "terraform-aws-modules/alb/aws"
 
   name            = "blog-alb"

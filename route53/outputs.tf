@@ -1,3 +1,3 @@
-output "barzahlen_de_nameservers" {
-  value = aws_route53_zone.barzahlen_de.name_servers
+output "cashpaymentsolutions_nameservers" {
+  value = aws_route53_zone.cashpaymentsolutions_at.name_servers
 }

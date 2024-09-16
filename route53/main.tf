@@ -1,8 +1,3 @@
-# Configure the AWS provider
-provider "aws" {
-  region = "us-west-2"  # Replace with your preferred region
-}
-
 ### Begin: Defaults
 # Specify a zone for a domain
 resource "aws_route53_zone" "barzahlen_de" {

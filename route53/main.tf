@@ -66,38 +66,24 @@ resource "aws_route53_record" "barzahlen_at_mx" {
   records = ["0 paysafe-com.mail.protection.outlook.com"]
 }
 
-# SPF record (TXT)
-resource "aws_route53_record" "barzahlen_at_spf" {
+# Combined TXT records for the root domain
+resource "aws_route53_record" "barzahlen_at_txt" {
   zone_id = aws_route53_zone.barzahlen_at.zone_id
   name    = ""
   type    = "TXT"
   ttl     = 3600
-  records = ["v=spf1 mx include:spf.protection.outlook.com ip4:5.45.109.84 ip4:37.200.98.157 ip4:46.231.176.212 ip4:46.231.176.222 ip6:2a03:4000:6:20f6::1 -all"]
+  records = [
+    "v=spf1 mx include:spf.protection.outlook.com ip4:5.45.109.84 ip4:37.200.98.157 ip4:46.231.176.212 ip4:46.231.176.222 ip6:2a03:4000:6:20f6::1 -all",
+    "qnyahgpqws3avvd5kcmwo6pbch9tv5yl",
+    "MS=ms63620310"
+  ]
 }
 
-# DMARC record
+# DMARC record (remains unchanged)
 resource "aws_route53_record" "barzahlen_at_dmarc" {
   zone_id = aws_route53_zone.barzahlen_at.zone_id
   name    = "_dmarc"
   type    = "TXT"
   ttl     = 3600
   records = ["v=DMARC1; p=reject; ruf=mailto:admin@viafintech.com; fo=1"]
-}
-
-# DNSWL record
-resource "aws_route53_record" "barzahlen_at_dnswl" {
-  zone_id = aws_route53_zone.barzahlen_at.zone_id
-  name    = ""
-  type    = "TXT"
-  ttl     = 3600
-  records = ["qnyahgpqws3avvd5kcmwo6pbch9tv5yl"]
-}
-
-# DNS TXT Verification
-resource "aws_route53_record" "barzahlen_at_paysafe" {
-  zone_id = aws_route53_zone.barzahlen_at.zone_id
-  name    = ""
-  type    = "TXT"
-  ttl     = 3600
-  records = ["MS=ms63620310"]
 }

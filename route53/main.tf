@@ -1,15 +1,15 @@
 ### Begin: Defaults
 # Specify a zone for a domain
-resource "aws_route53_zone" "cashpaymentsolutions_de" {
-  name = "cashpaymentsolutions.de"
+resource "aws_route53_zone" "cashpaymentsolutions_es" {
+  name = "cashpaymentsolutions.es"
 }
 
 # NS records are automatically created by AWS Route 53, so no need to define them.
 ### End: Defaults
 
 ### Begin: Combined CAA configuration
-resource "aws_route53_record" "cashpaymentsolutions_de_caa_combined" {
-  zone_id = aws_route53_zone.cashpaymentsolutions_de.zone_id
+resource "aws_route53_record" "cashpaymentsolutions_es_caa_combined" {
+  zone_id = aws_route53_zone.cashpaymentsolutions_es.zone_id
   name    = ""
   type    = "CAA"
   ttl     = 3600
@@ -26,9 +26,9 @@ resource "aws_route53_record" "cashpaymentsolutions_de_caa_combined" {
 ### Begin: Custom Entries
 
 # Handle Mail/SPF record
-# Disallows sending mails on behalf of cashpaymentsolutions.de
-resource "aws_route53_record" "cashpaymentsolutions_de_spf" {
-  zone_id = aws_route53_zone.cashpaymentsolutions_de.zone_id
+# Disallows sending mails on behalf of cashpaymentsolutions.es
+resource "aws_route53_record" "cashpaymentsolutions_es_spf" {
+  zone_id = aws_route53_zone.cashpaymentsolutions_es.zone_id
   name    = ""
   type    = "TXT"
   ttl     = 3600
@@ -36,8 +36,8 @@ resource "aws_route53_record" "cashpaymentsolutions_de_spf" {
 }
 
 # DMARC TXT record
-resource "aws_route53_record" "cashpaymentsolutions_de_dmarc" {
-  zone_id = aws_route53_zone.cashpaymentsolutions_de.zone_id
+resource "aws_route53_record" "cashpaymentsolutions_es_dmarc" {
+  zone_id = aws_route53_zone.cashpaymentsolutions_es.zone_id
   name    = "_dmarc"
   type    = "TXT"
   ttl     = 3600

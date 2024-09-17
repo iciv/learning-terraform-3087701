@@ -1,11 +1,15 @@
+### Begin: Defaults
 # Specify a zone for a domain
-resource "aws_route53_zone" "viacash_cz" {
-  name = "viacash.cz"
+resource "aws_route53_zone" "viacash_de" {
+  name = "viacash.de"
 }
 
-# Combine CAA records for viacash.cz
-resource "aws_route53_record" "viacash_cz_caa_combined" {
-  zone_id = aws_route53_zone.viacash_cz.zone_id
+# NS records are automatically created by AWS Route 53, so no need to define them.
+### End: Defaults
+
+### Begin: Combined CAA configuration
+resource "aws_route53_record" "viacash_de_caa_combined" {
+  zone_id = aws_route53_zone.viacash_de.zone_id
   name    = ""
   type    = "CAA"
   ttl     = 3600
@@ -17,15 +21,26 @@ resource "aws_route53_record" "viacash_cz_caa_combined" {
     "0 issue \"sectigo.com\""
   ]
 }
+### End: Combined CAA configuration
 
-# Combine TXT records for viacash.cz
-resource "aws_route53_record" "viacash_cz_txt_combined" {
-  zone_id = aws_route53_zone.viacash_cz.zone_id
+### Begin: Custom Entries
+
+# Handle Mail/SPF record
+# Disallows sending mails on behalf of viacash.de
+resource "aws_route53_record" "viacash_de_spf" {
+  zone_id = aws_route53_zone.viacash_de.zone_id
   name    = ""
   type    = "TXT"
   ttl     = 3600
-  records = [
-    "v=spf1 -all",
-    "v=DMARC1; p=reject; ruf=mailto:admin@viafintech.com; fo=1"
-  ]
+  records = ["v=spf1 -all"]
 }
+
+# DMARC TXT record
+resource "aws_route53_record" "viacash_de_dmarc" {
+  zone_id = aws_route53_zone.viacash_de.zone_id
+  name    = "_dmarc"
+  type    = "TXT"
+  ttl     = 3600
+  records = ["v=DMARC1; p=reject; ruf=mailto:admin@viafintech.com; fo=1"]
+}
+### End: Custom Entries

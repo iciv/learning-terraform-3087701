@@ -92,7 +92,7 @@ resource "aws_route53_record" "cps_io_mx1" {
   records = ["0 paysafe-com.mail.protection.outlook.com."]
 }
 
-# Combined TXT records for SPF, DMARC, and DNSWL
+# Combined TXT records for SPF, DMARC, DNSWL, and Paysafe Verification
 resource "aws_route53_record" "cps_io_txt_combined" {
   zone_id = aws_route53_zone.cps_io.zone_id
   name    = ""
@@ -101,15 +101,7 @@ resource "aws_route53_record" "cps_io_txt_combined" {
   records = [
     "v=spf1 mx include:spf.protection.outlook.com ip4:5.45.109.84 ip4:37.200.98.157 ip4:46.231.176.212 ip4:46.231.176.222 ip4:94.130.121.72/29 ip6:2a01:4f8:10a:2cd8::/64 ip6:2a03:4000:6:20f6::1 ip6:2a00:1158:3::c7 -all",  # SPF
     "v=DMARC1; p=reject; ruf=mailto:admin@viafintech.com; fo=1",  # DMARC
-    "cpy90m1nbqtjthf0f3ce3s40pyhbbitn"  # DNSWL
+    "cpy90m1nbqtjthf0f3ce3s40pyhbbitn",  # DNSWL
+    "MS=ms30858004"  # Paysafe Verification
   ]
-}
-
-# DNS TXT Paysafe Verification
-resource "aws_route53_record" "cps_io_paysafe" {
-  zone_id = aws_route53_zone.cps_io.zone_id
-  name    = ""
-  type    = "TXT"
-  ttl     = 3600
-  records = ["MS=ms30858004"]
 }

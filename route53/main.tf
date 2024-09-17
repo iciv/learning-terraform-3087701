@@ -143,13 +143,17 @@ resource "aws_route53_record" "viacash_com_mx1" {
   records = ["0 paysafe-com.mail.protection.outlook.com"]
 }
 
-# Handle Mail/SPF record
-resource "aws_route53_record" "viacash_com_spf" {
+# Combined TXT records for SPF, Google Site Verification, and Paysafe Verification
+resource "aws_route53_record" "viacash_com_txt_combined" {
   zone_id = aws_route53_zone.viacash_com.zone_id
   name    = ""
   type    = "TXT"
   ttl     = 3600
-  records = ["v=spf1 a mx include:spf.protection.outlook.com -all"]
+  records = [
+    "v=spf1 a mx include:spf.protection.outlook.com -all",
+    "google-site-verification=uNE3x98J65aaMwakH3VgwDqYadXOtNFrQoZadmMQhWU",
+    "MS=ms69069745"
+  ]
 }
 
 # DMARC TXT record (report-only)
@@ -161,21 +165,4 @@ resource "aws_route53_record" "viacash_com_dmarc" {
   records = ["v=DMARC1; p=reject; ruf=mailto:admin@viafintech.com; fo=1"]
 }
 
-# Google Site Verification
-resource "aws_route53_record" "viacash_com_google_siteverification" {
-  zone_id = aws_route53_zone.viacash_com.zone_id
-  name    = ""
-  type    = "TXT"
-  ttl     = 3600
-  records = ["google-site-verification=uNE3x98J65aaMwakH3VgwDqYadXOtNFrQoZadmMQhWU"]
-}
-
-# DNS TXT Paysafe Verification
-resource "aws_route53_record" "viacash_com_paysafe" {
-  zone_id = aws_route53_zone.viacash_com.zone_id
-  name    = ""
-  type    = "TXT"
-  ttl     = 3600
-  records = ["MS=ms69069745"]
-}
 ### End: Custom Entries

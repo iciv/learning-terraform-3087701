@@ -28,7 +28,7 @@ resource "aws_route53_record" "viafintech_com_caa" {
 
 ### Custom Entries
 
-### Begin: Custom Entries
+## Begin: Custom Entries
 # Handle A-records for various subdomains
 resource "aws_route53_record" "viafintech_com_a_records" {
   zone_id = aws_route53_zone.viafintech_com.zone_id

@@ -105,107 +105,119 @@ resource "aws_route53_record" "viafintech_com_cname_records" {
   records = [each.value]
 }
 
-
-
-
-
-resource "aws_route53_record" "viafintech_com_mx_txt_dkim_records" {
+# MX Record
+resource "aws_route53_record" "viafintech_com_mx" {
   zone_id = aws_route53_zone.viafintech_com.zone_id
+  name    = ""
+  type    = "MX"
+  ttl     = 3600
+  records = ["0 viafintech-com.mail.protection.outlook.com."]
+}
 
-  for_each = {
-    # MX Record
-    "MX" = {
-      name    = ""
-      type    = "MX"
-      ttl     = 3600
-      records = ["0 viafintech-com.mail.protection.outlook.com."]
-    }
+# SPF Record 1 (Main SPF)
+resource "aws_route53_record" "viafintech_com_spf1" {
+  zone_id = aws_route53_zone.viafintech_com.zone_id
+  name    = ""
+  type    = "TXT"
+  ttl     = 3600
+  records = ["v=spf1 a mx include:spf.protection.outlook.com include:_spf.viafintech.com include:spf.mandrillapp.com include:spf.mailjet.com include:_spf.salesforce.com -all"]
+}
 
-    # SPF Records
-    "SPF1" = {
-      name    = ""
-      type    = "TXT"
-      ttl     = 3600
-      records = [jsonencode("v=spf1 a mx include:spf.protection.outlook.com include:_spf.viafintech.com include:spf.mandrillapp.com include:spf.mailjet.com include:_spf.salesforce.com -all")]
-    }
-    "SPF2" = {
-      name    = "_spf"
-      type    = "TXT"
-      ttl     = 3600
-      records = [jsonencode("v=spf1 include:_netblocks.viafintech.com include:_netblocks2.viafintech.com -all")]
-    }
-    "SPF3" = {
-      name    = "_netblocks"
-      type    = "TXT"
-      ttl     = 3600
-      records = [jsonencode("v=spf1 ip4:46.231.176.208/28 ip4:80.82.206.128/26 ip4:88.99.148.153 ip4:94.130.121.72/29 ip4:217.111.25.32/29 -all")]
-    }
-    "SPF4" = {
-      name    = "_netblocks2"
-      type    = "TXT"
-      ttl     = 3600
-      records = [jsonencode("v=spf1 ip6:2a00:cd0:1025::/48 ip6:2a01:4f8:10a:2cd8::/64 ip6:2001:920:1a21:2900::/56 -all")]
-    }
+# SPF Record 2 (Netblocks Collector)
+resource "aws_route53_record" "viafintech_com_spf2" {
+  zone_id = aws_route53_zone.viafintech_com.zone_id
+  name    = "_spf"
+  type    = "TXT"
+  ttl     = 3600
+  records = ["v=spf1 include:_netblocks.viafintech.com include:_netblocks2.viafintech.com -all"]
+}
 
-    # DMARC Records
-    "DMARC" = {
-      name    = "_dmarc"
-      type    = "TXT"
-      ttl     = 3600
-      records = [jsonencode("v=DMARC1; p=reject; ruf=mailto:admin@viafintech.com; fo=1")]
-    }
-    "DMARC_OTHERS" = {
-      name    = "*._report._dmarc"
-      type    = "TXT"
-      ttl     = 3600
-      records = [jsonencode("v=DMARC1")]
-    }
+# SPF Record 3 (Netblocks IPv4)
+resource "aws_route53_record" "viafintech_com_spf3" {
+  zone_id = aws_route53_zone.viafintech_com.zone_id
+  name    = "_netblocks"
+  type    = "TXT"
+  ttl     = 3600
+  records = ["v=spf1 ip4:46.231.176.208/28 ip4:80.82.206.128/26 ip4:88.99.148.153 ip4:94.130.121.72/29 ip4:217.111.25.32/29 -all"]
+}
 
-    # Verification Records
-    "GOOGLE_SITE_VERIFICATION" = {
-      name    = ""
-      type    = "TXT"
-      ttl     = 3600
-      records = ["google-site-verification=fVi_Aw06nFcMZGt4-cDzZa0Bc6yXlrEP41j5n6Eza-I"]
-    }
-    "MAILJET_VERIFICATION" = {
-      name    = "mailjet._6323429f"
-      type    = "TXT"
-      ttl     = 3600
-      records = [jsonencode("6323429f5b5f674fb4391252496cd2af")]
-    }
+# SPF Record 4 (Netblocks IPv6)
+resource "aws_route53_record" "viafintech_com_spf4" {
+  zone_id = aws_route53_zone.viafintech_com.zone_id
+  name    = "_netblocks2"
+  type    = "TXT"
+  ttl     = 3600
+  records = ["v=spf1 ip6:2a00:cd0:1025::/48 ip6:2a01:4f8:10a:2cd8::/64 ip6:2001:920:1a21:2900::/56 -all"]
+}
 
-    # DKIM Records
-    "MAILJET_DKIM" = {
-      name    = "mailjet._domainkey"
-      type    = "TXT"
-      ttl     = 3600
-      records = [jsonencode("v=DKIM1; k=rsa; p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCdPO28UO2uUVUXvGEI/XfmS92UqmbiXTcUX+ZzT0cpeKNi6kAiAfgIi+Y3faPlcJCzii83pQJWVyvCihlxqo9YVyyWBVsP5ycHC3CNmt/eLuBv/AAnONwUrEiVwbdSO1Ty0DQJXlc85TpiaknXr41MzkNDAlabX97ZHMWJzFf2rwIDAQAB")]
-    }
-    "MANDRILL_DKIM" = {
-      name    = "mandrill._domainkey"
-      type    = "TXT"
-      ttl     = 3600
-      records = [jsonencode("v=DKIM1; k=rsa; p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCrLHiExVd55zd/IQ/J/mRwSRMAocV/hMB3jXwaHH36d9NaVynQFYV8NaWi69c1veUtRzGt7yAioXqLj7Z4TeEUoOLgrKsn8YnckGs9i3B3tVFB+Ch/4mPhXWiNfNdynHWBcPcbJ8kjEQ2U8y78dHZj1YeRXXVvWob2OaKynO8/lQIDAQAB;")]
-    }
-    "HETZNER_DKIM" = {
-      name    = "default2205._domainkey"
-      type    = "TXT"
-      ttl     = 3600
-      records = [jsonencode("v=DKIM1;p=MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAzluwhgUUAN+pWCtRDry5u5u02lULd0UX/M0tli3LG4+0BN7TTaZU5VJH58HIofGYM0bqKSjP5sUiRI+5g59774maQg7hSinhp9kCVRgCGU0nOLaK1uLrRjCnavTOcyU6369AfPHj/Ip9AwuP3WiUSzeHUHr3ZRUSsvkX710y3352AhBnV+JxnH4BA1z+YkNF9nfBrTMTon1OnPRDo8a0OknMuVem15Kg/s4Rm4bMBfio+16Al1qplM+mXeJW36ExZgr+C2nrERzmKEMPWhD5WBqq8ipXm9L830w6AWkExW/2/G0bIdieZ0FUU1OEafLZz5y3+UTED+cTtcwdsIIJ6wIDAQAB")]
-    }
+# DMARC Record
+resource "aws_route53_record" "viafintech_com_dmarc" {
+  zone_id = aws_route53_zone.viafintech_com.zone_id
+  name    = "_dmarc"
+  type    = "TXT"
+  ttl     = 3600
+  records = ["v=DMARC1; p=reject; ruf=mailto:admin@viafintech.com; fo=1"]
+}
 
-    # Paysafe Verification
-    "PAYSAFE" = {
-      name    = ""
-      type    = "TXT"
-      ttl     = 3600
-      records = [jsonencode("MS=ms20420367")]
-    }
-  }
+# DMARC Record for Other Domains
+resource "aws_route53_record" "viafintech_com_dmarc_others" {
+  zone_id = aws_route53_zone.viafintech_com.zone_id
+  name    = "*._report._dmarc"
+  type    = "TXT"
+  ttl     = 3600
+  records = ["v=DMARC1"]
+}
 
-  name    = each.value.name
-  type    = each.value.type
-  ttl     = each.value.ttl
-  records = each.value.records
+# Google Site Verification
+resource "aws_route53_record" "viafintech_com_google_site_verification" {
+  zone_id = aws_route53_zone.viafintech_com.zone_id
+  name    = ""
+  type    = "TXT"
+  ttl     = 3600
+  records = ["google-site-verification=fVi_Aw06nFcMZGt4-cDzZa0Bc6yXlrEP41j5n6Eza-I"]
+}
+
+# Mailjet Verification
+resource "aws_route53_record" "viafintech_com_mailjet_verification" {
+  zone_id = aws_route53_zone.viafintech_com.zone_id
+  name    = "mailjet._6323429f"
+  type    = "TXT"
+  ttl     = 3600
+  records = ["6323429f5b5f674fb4391252496cd2af"]
+}
+
+# DKIM for Mailjet
+resource "aws_route53_record" "viafintech_com_mailjet_dkim" {
+  zone_id = aws_route53_zone.viafintech_com.zone_id
+  name    = "mailjet._domainkey"
+  type    = "TXT"
+  ttl     = 3600
+  records = ["v=DKIM1; k=rsa; p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCdPO28UO2uUVUXvGEI/XfmS92UqmbiXTcUX+ZzT0cpeKNi6kAiAfgIi+Y3faPlcJCzii83pQJWVyvCihlxqo9YVyyWBVsP5ycHC3CNmt/eLuBv/AAnONwUrEiVwbdSO1Ty0DQJXlc85TpiaknXr41MzkNDAlabX97ZHMWJzFf2rwIDAQAB"]
+}
+
+# DKIM for Mandrill
+resource "aws_route53_record" "viafintech_com_mandrill_dkim" {
+  zone_id = aws_route53_zone.viafintech_com.zone_id
+  name    = "mandrill._domainkey"
+  type    = "TXT"
+  ttl     = 3600
+  records = ["v=DKIM1; k=rsa; p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCrLHiExVd55zd/IQ/J/mRwSRMAocV/hMB3jXwaHH36d9NaVynQFYV8NaWi69c1veUtRzGt7yAioXqLj7Z4TeEUoOLgrKsn8YnckGs9i3B3tVFB+Ch/4mPhXWiNfNdynHWBcPcbJ8kjEQ2U8y78dHZj1YeRXXVvWob2OaKynO8/lQIDAQAB;"]
+}
+
+# DKIM for Hetzner
+resource "aws_route53_record" "viafintech_com_hetzner_dkim" {
+  zone_id = aws_route53_zone.viafintech_com.zone_id
+  name    = "default2205._domainkey"
+  type    = "TXT"
+  ttl     = 3600
+  records = ["v=DKIM1;p=MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAzluwhgUUAN+pWCtRDry5u5u02lULd0UX/M0tli3LG4+0BN7TTaZU5VJH58HIofGYM0bqKSjP5sUiRI+5g59774maQg7hSinhp9kCVRgCGU0nOLaK1uLrRjCnavTOcyU6369AfPHj/Ip9AwuP3WiUSzeHUHr3ZRUSsvkX710y3352AhBnV+JxnH4BA1z+YkNF9nfBrTMTon1OnPRDo8a0OknMuVem15Kg/s4Rm4bMBfio+16Al1qplM+mXeJW36ExZgr+C2nrERzmKEMPWhD5WBqq8ipXm9L830w6AWkExW/2/G0bIdieZ0FUU1OEafLZz5y3+UTED+cTtcwdsIIJ6wIDAQAB"]
+}
+
+# Paysafe Verification
+resource "aws_route53_record" "viafintech_com_paysafe_verification" {
+  zone_id = aws_route53_zone.viafintech_com.zone_id
+  name    = ""
+  type    = "TXT"
+  ttl     = 3600
+  records = ["MS=ms20420367"]
 }

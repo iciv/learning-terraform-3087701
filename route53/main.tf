@@ -1,15 +1,15 @@
 ### Begin: Defaults
 # Specify a zone for a domain
-resource "aws_route53_zone" "viacash_lv" {
-  name = "viacash.lv"
+resource "aws_route53_zone" "viacash_nl" {
+  name = "viacash.nl"
 }
 
 # NS records are automatically created by AWS Route 53, so no need to define them.
 ### End: Defaults
 
 ### Begin: Combined CAA configuration
-resource "aws_route53_record" "viacash_lv_caa_combined" {
-  zone_id = aws_route53_zone.viacash_lv.zone_id
+resource "aws_route53_record" "viacash_nl_caa_combined" {
+  zone_id = aws_route53_zone.viacash_nl.zone_id
   name    = ""
   type    = "CAA"
   ttl     = 3600
@@ -26,9 +26,9 @@ resource "aws_route53_record" "viacash_lv_caa_combined" {
 ### Begin: Custom Entries
 
 # Handle Mail/SPF record
-# Disallows sending mails on behalf of viacash.lv
-resource "aws_route53_record" "viacash_lv_spf" {
-  zone_id = aws_route53_zone.viacash_lv.zone_id
+# Disallows sending mails on behalf of viacash.nl
+resource "aws_route53_record" "viacash_nl_spf" {
+  zone_id = aws_route53_zone.viacash_nl.zone_id
   name    = ""
   type    = "TXT"
   ttl     = 3600
@@ -36,8 +36,8 @@ resource "aws_route53_record" "viacash_lv_spf" {
 }
 
 # DMARC TXT record
-resource "aws_route53_record" "viacash_lv_dmarc" {
-  zone_id = aws_route53_zone.viacash_lv.zone_id
+resource "aws_route53_record" "viacash_nl_dmarc" {
+  zone_id = aws_route53_zone.viacash_nl.zone_id
   name    = "_dmarc"
   type    = "TXT"
   ttl     = 3600

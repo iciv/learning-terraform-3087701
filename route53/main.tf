@@ -114,13 +114,22 @@ resource "aws_route53_record" "viafintech_com_mx" {
   records = ["0 viafintech-com.mail.protection.outlook.com."]
 }
 
-# SPF Record 1 (Main SPF)
-resource "aws_route53_record" "viafintech_com_spf1" {
+# Combined TXT Record for viafintech.com
+resource "aws_route53_record" "viafintech_com_txt_records" {
   zone_id = aws_route53_zone.viafintech_com.zone_id
   name    = ""
   type    = "TXT"
   ttl     = 3600
-  records = ["v=spf1 a mx include:spf.protection.outlook.com include:_spf.viafintech.com include:spf.mandrillapp.com include:spf.mailjet.com include:_spf.salesforce.com -all"]
+  records = [
+    # SPF Record
+    "v=spf1 a mx include:spf.protection.outlook.com include:_spf.viafintech.com include:spf.mandrillapp.com include:spf.mailjet.com include:_spf.salesforce.com -all",
+
+    # Google Site Verification
+    "google-site-verification=fVi_Aw06nFcMZGt4-cDzZa0Bc6yXlrEP41j5n6Eza-I",
+
+    # Paysafe Verification
+    "MS=ms20420367"
+  ]
 }
 
 # SPF Record 2 (Netblocks Collector)
@@ -168,15 +177,6 @@ resource "aws_route53_record" "viafintech_com_dmarc_others" {
   records = ["v=DMARC1"]
 }
 
-# Google Site Verification
-resource "aws_route53_record" "viafintech_com_google_site_verification" {
-  zone_id = aws_route53_zone.viafintech_com.zone_id
-  name    = ""
-  type    = "TXT"
-  ttl     = 3600
-  records = ["google-site-verification=fVi_Aw06nFcMZGt4-cDzZa0Bc6yXlrEP41j5n6Eza-I"]
-}
-
 # Mailjet Verification
 resource "aws_route53_record" "viafintech_com_mailjet_verification" {
   zone_id = aws_route53_zone.viafintech_com.zone_id
@@ -195,29 +195,25 @@ resource "aws_route53_record" "viafintech_com_mailjet_dkim" {
   records = ["v=DKIM1; k=rsa; p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCdPO28UO2uUVUXvGEI/XfmS92UqmbiXTcUX+ZzT0cpeKNi6kAiAfgIi+Y3faPlcJCzii83pQJWVyvCihlxqo9YVyyWBVsP5ycHC3CNmt/eLuBv/AAnONwUrEiVwbdSO1Ty0DQJXlc85TpiaknXr41MzkNDAlabX97ZHMWJzFf2rwIDAQAB"]
 }
 
-# DKIM for Mandrill
-resource "aws_route53_record" "viafintech_com_mandrill_dkim" {
-  zone_id = aws_route53_zone.viafintech_com.zone_id
-  name    = "mandrill._domainkey"
-  type    = "TXT"
-  ttl     = 3600
-  records = ["v=DKIM1; k=rsa; p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCrLHiExVd55zd/IQ/J/mRwSRMAocV/hMB3jXwaHH36d9NaVynQFYV8NaWi69c1veUtRzGt7yAioXqLj7Z4TeEUoOLgrKsn8YnckGs9i3B3tVFB+Ch/4mPhXWiNfNdynHWBcPcbJ8kjEQ2U8y78dHZj1YeRXXVvWob2OaKynO8/lQIDAQAB;"]
-}
-
-# DKIM for Hetzner
+# DKIM for Hetzner (Split long string)
 resource "aws_route53_record" "viafintech_com_hetzner_dkim" {
   zone_id = aws_route53_zone.viafintech_com.zone_id
   name    = "default2205._domainkey"
   type    = "TXT"
   ttl     = 3600
-  records = ["v=DKIM1;p=MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAzluwhgUUAN+pWCtRDry5u5u02lULd0UX/M0tli3LG4+0BN7TTaZU5VJH58HIofGYM0bqKSjP5sUiRI+5g59774maQg7hSinhp9kCVRgCGU0nOLaK1uLrRjCnavTOcyU6369AfPHj/Ip9AwuP3WiUSzeHUHr3ZRUSsvkX710y3352AhBnV+JxnH4BA1z+YkNF9nfBrTMTon1OnPRDo8a0OknMuVem15Kg/s4Rm4bMBfio+16Al1qplM+mXeJW36ExZgr+C2nrERzmKEMPWhD5WBqq8ipXm9L830w6AWkExW/2/G0bIdieZ0FUU1OEafLZz5y3+UTED+cTtcwdsIIJ6wIDAQAB"]
+  records = [
+    "v=DKIM1;p=MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAzluwhgUUAN+pWCtRDry5u5u02lULd0UX/M0tli3LG4+0BN7TTaZU5VJH58HIofGYM0bqKSjP5sUiRI+5g59774maQg7hSinhp9kCVRgCGU0nOLaK1uLrRjCnavTOcyU6369AfPHj/Ip9AwuP3WiUSzeHUHr3ZRUSsvkX710y3352AhBnV+JxnH4BA1z",
+    "+YkNF9nfBrTMTon1OnPRDo8a0OknMuVem15Kg/s4Rm4bMBfio+16Al1qplM+mXeJW36ExZgr+C2nrERzmKEMPWhD5WBqq8ipXm9L830w6AWkExW/2/G0bIdieZ0FUU1OEafLZz5y3+UTED+cTtcwdsIIJ6wIDAQAB"
+  ]
 }
 
-# Paysafe Verification
-resource "aws_route53_record" "viafintech_com_paysafe_verification" {
+# DKIM for Mandrill (Split long string)
+resource "aws_route53_record" "viafintech_com_mandrill_dkim" {
   zone_id = aws_route53_zone.viafintech_com.zone_id
-  name    = ""
+  name    = "mandrill._domainkey"
   type    = "TXT"
   ttl     = 3600
-  records = ["MS=ms20420367"]
+  records = [
+    "v=DKIM1; k=rsa; p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCrLHiExVd55zd/IQ/J/mRwSRMAocV/hMB3jXwaHH36d9NaVynQFYV8NaWi69c1veUtRzGt7yAioXqLj7Z4TeEUoOLgrKsn8YnckGs9i3B3tVFB+Ch/4mPhXWiNfNdynHWBcPcbJ8kjEQ2U8y78dHZj1YeRXXVvWob2OaKynO8/lQIDAQAB;"
+  ]
 }

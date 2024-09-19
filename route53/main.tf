@@ -114,7 +114,7 @@ resource "aws_route53_record" "viafintech_com_mx" {
   records = ["0 viafintech-com.mail.protection.outlook.com."]
 }
 
-# Combined TXT Record for viafintech.com
+# Combined TXT Record for Viafintech.com
 resource "aws_route53_record" "viafintech_com_txt_records" {
   zone_id = aws_route53_zone.viafintech_com.zone_id
   name    = ""

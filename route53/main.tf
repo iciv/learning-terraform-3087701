@@ -1,19 +1,7 @@
+### Begin: Defaults
 # Specify a zone for a domain
 resource "aws_route53_zone" "viafintech_de" {
   name = "viafintech.de"
-}
-
-# Specify nameserver records (NS)
-resource "aws_route53_record" "viafintech_de_ns" {
-  zone_id = aws_route53_zone.viafintech_de.zone_id
-  name    = ""
-  type    = "NS"
-  ttl     = 86400
-  records = [
-    "hydrogen.ns.hetzner.com.",
-    "helium.ns.hetzner.de.",
-    "oxygen.ns.hetzner.com."
-  ]
 }
 
 # CAA configuration
@@ -55,3 +43,4 @@ resource "aws_route53_record" "viafintech_de_dmarc" {
     "v=DMARC1; p=reject; ruf=mailto:admin@viafintech.com; fo=1"
   ]
 }
+# End: Custom Entries

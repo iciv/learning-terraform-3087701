@@ -26,301 +26,70 @@ resource "aws_route53_record" "barzahlen_de_caa_combined" {
 
 ### Begin: Custom Entries
 
-# Handle A-record for <domain>.<tld>
-resource "aws_route53_record" "barzahlen_de_domainwide_a" {
+# Handle A-records for various subdomains
+resource "aws_route53_record" "barzahlen_de_a_records" {
   zone_id = aws_route53_zone.barzahlen_de.zone_id
-  name    = ""
+  for_each = {
+    ""                    = "94.130.121.74"
+    "controlcenter"       = "80.82.206.134"
+    "api"                 = "46.231.176.214"
+    "api-banking"         = "46.231.176.218"
+    "api-client"          = "80.82.206.133"
+    "api-collection"      = "46.231.176.218"
+    "api-offline"         = "46.231.176.217"
+    "api-offline-sandbox" = "46.231.176.216"
+    "api-sandbox"         = "46.231.176.215"
+    "api-utility"         = "46.231.176.218"
+    "api-utility-newcert" = "46.231.176.219"
+    "customers"           = "80.82.206.130"
+    "customers-sandbox"   = "80.82.206.132"
+    "docs"                = "159.69.116.223"
+    "link"                = "109.234.127.65"
+    "mail3"               = "46.231.176.222"
+    "partner"             = "80.82.206.134"
+    "payment"             = "46.231.176.214"
+    "payment-sandbox"     = "46.231.176.215"
+    "stores"              = "80.82.206.131"
+    "transfer"            = "46.231.176.221"
+  }
+  name    = each.key
   type    = "A"
   ttl     = 3600
-  records = ["94.130.121.74"]
+  records = [each.value]
 }
 
-# Handle A-record for controlcenter.<domain>.<tld>
-resource "aws_route53_record" "barzahlen_de_controlcenter_a" {
+# Handle AAAA-records for various subdomains
+resource "aws_route53_record" "barzahlen_de_aaaa_records" {
   zone_id = aws_route53_zone.barzahlen_de.zone_id
-  name    = "controlcenter"
-  type    = "A"
-  ttl     = 3600
-  records = ["80.82.206.134"]
-}
-
-# Handle A-record for api.<domain>.<tld>
-resource "aws_route53_record" "barzahlen_de_api_a" {
-  zone_id = aws_route53_zone.barzahlen_de.zone_id
-  name    = "api"
-  type    = "A"
-  ttl     = 3600
-  records = ["46.231.176.214"]
-}
-
-# Handle A-record for api-banking.<domain>.<tld>
-resource "aws_route53_record" "barzahlen_de_api_banking_a" {
-  zone_id = aws_route53_zone.barzahlen_de.zone_id
-  name    = "api-banking"
-  type    = "A"
-  ttl     = 3600
-  records = ["46.231.176.218"]
-}
-
-# Handle A-record for api-client.<domain>.<tld>
-resource "aws_route53_record" "barzahlen_de_api_client_a" {
-  zone_id = aws_route53_zone.barzahlen_de.zone_id
-  name    = "api-client"
-  type    = "A"
-  ttl     = 3600
-  records = ["80.82.206.133"]
-}
-
-# Handle A-record for api-collection.<domain>.<tld>
-resource "aws_route53_record" "barzahlen_de_api_collection_a" {
-  zone_id = aws_route53_zone.barzahlen_de.zone_id
-  name    = "api-collection"
-  type    = "A"
-  ttl     = 3600
-  records = ["46.231.176.218"]
-}
-
-# Handle A-record for api-offline.<domain>.<tld>
-resource "aws_route53_record" "barzahlen_de_api_offline_a" {
-  zone_id = aws_route53_zone.barzahlen_de.zone_id
-  name    = "api-offline"
-  type    = "A"
-  ttl     = 3600
-  records = ["46.231.176.217"]
-}
-
-# Handle A-record for api-offline-sandbox.<domain>.<tld>
-resource "aws_route53_record" "barzahlen_de_api_offline_sandbox_a" {
-  zone_id = aws_route53_zone.barzahlen_de.zone_id
-  name    = "api-offline-sandbox"
-  type    = "A"
-  ttl     = 3600
-  records = ["46.231.176.216"]
-}
-
-# Handle A-record for api-sandbox.<domain>.<tld>
-resource "aws_route53_record" "barzahlen_de_api_sandbox_a" {
-  zone_id = aws_route53_zone.barzahlen_de.zone_id
-  name    = "api-sandbox"
-  type    = "A"
-  ttl     = 3600
-  records = ["46.231.176.215"]
-}
-
-# Handle A-record for api-utility.<domain>.<tld>
-resource "aws_route53_record" "barzahlen_de_api_utility_a" {
-  zone_id = aws_route53_zone.barzahlen_de.zone_id
-  name    = "api-utility"
-  type    = "A"
-  ttl     = 3600
-  records = ["46.231.176.218"]
-}
-
-# Handle A-record for api-utility-newcert.<domain>.<tld>
-resource "aws_route53_record" "barzahlen_de_api_utility_newcert_a" {
-  zone_id = aws_route53_zone.barzahlen_de.zone_id
-  name    = "api-utility-newcert"
-  type    = "A"
-  ttl     = 3600
-  records = ["46.231.176.219"]
-}
-
-# Handle A-record for customers.<domain>.<tld>
-resource "aws_route53_record" "barzahlen_de_customers_a" {
-  zone_id = aws_route53_zone.barzahlen_de.zone_id
-  name    = "customers"
-  type    = "A"
-  ttl     = 3600
-  records = ["80.82.206.130"]
-}
-
-# Handle A-record for customers-sandbox.<domain>.<tld>
-resource "aws_route53_record" "barzahlen_de_customers_sandbox_a" {
-  zone_id = aws_route53_zone.barzahlen_de.zone_id
-  name    = "customers-sandbox"
-  type    = "A"
-  ttl     = 3600
-  records = ["80.82.206.132"]
-}
-
-# Handle A-record for docs.<domain>.<tld>
-resource "aws_route53_record" "barzahlen_de_docs_a" {
-  zone_id = aws_route53_zone.barzahlen_de.zone_id
-  name    = "docs"
-  type    = "A"
-  ttl     = 3600
-  records = ["159.69.116.223"]
-}
-
-# Handle A-record for link.<domain>.<tld>
-resource "aws_route53_record" "barzahlen_de_link_a" {
-  zone_id = aws_route53_zone.barzahlen_de.zone_id
-  name    = "link"
-  type    = "A"
-  ttl     = 3600
-  records = ["109.234.127.65"]
-}
-
-# Handle A-record for mail3.<domain>.<tld>
-resource "aws_route53_record" "barzahlen_de_mail3_a" {
-  zone_id = aws_route53_zone.barzahlen_de.zone_id
-  name    = "mail3"
-  type    = "A"
-  ttl     = 3600
-  records = ["46.231.176.222"]
-}
-
-# Handle A-record for partner.<domain>.<tld>
-resource "aws_route53_record" "barzahlen_de_partner_a" {
-  zone_id = aws_route53_zone.barzahlen_de.zone_id
-  name    = "partner"
-  type    = "A"
-  ttl     = 3600
-  records = ["80.82.206.134"]
-}
-
-# Handle A-record for payment.<domain>.<tld>
-resource "aws_route53_record" "barzahlen_de_payment_a" {
-  zone_id = aws_route53_zone.barzahlen_de.zone_id
-  name    = "payment"
-  type    = "A"
-  ttl     = 3600
-  records = ["46.231.176.214"]
-}
-
-# Handle A-record for payment-sandbox.<domain>.<tld>
-resource "aws_route53_record" "barzahlen_de_payment_sandbox_a" {
-  zone_id = aws_route53_zone.barzahlen_de.zone_id
-  name    = "payment-sandbox"
-  type    = "A"
-  ttl     = 3600
-  records = ["46.231.176.215"]
-}
-
-# Handle A-record for stores.<domain>.<tld>
-resource "aws_route53_record" "barzahlen_de_stores_a" {
-  zone_id = aws_route53_zone.barzahlen_de.zone_id
-  name    = "stores"
-  type    = "A"
-  ttl     = 3600
-  records = ["80.82.206.131"]
-}
-
-# Handle A-record for transfer.<domain>.<tld>
-resource "aws_route53_record" "barzahlen_de_transfer_a" {
-  zone_id = aws_route53_zone.barzahlen_de.zone_id
-  name    = "transfer"
-  type    = "A"
-  ttl     = 3600
-  records = ["46.231.176.221"]
-}
-
-# Handle AAAA-record for <domain>.<tld>
-resource "aws_route53_record" "barzahlen_de_domainwide_aaaa" {
-  zone_id = aws_route53_zone.barzahlen_de.zone_id
-  name    = ""
+  for_each = {
+    ""     = "2a01:4f8:10a:2cd8::74"
+    "docs" = "2a01:4f8:c012:aec3::1"
+  }
+  name    = each.key
   type    = "AAAA"
   ttl     = 3600
-  records = ["2a01:4f8:10a:2cd8::74"]
+  records = [each.value]
 }
 
-# Handle AAAA-record for docs.<domain>.<tld>
-resource "aws_route53_record" "barzahlen_de_docs_aaaa" {
+# Handle CNAME-records for various subdomains
+resource "aws_route53_record" "barzahlen_de_cname_records" {
   zone_id = aws_route53_zone.barzahlen_de.zone_id
-  name    = "docs"
-  type    = "AAAA"
-  ttl     = 3600
-  records = ["2a01:4f8:c012:aec3::1"]
-}
-
-# Handle CNAME-record for cdn.<domain>.<tld>
-resource "aws_route53_record" "barzahlen_de_cname_cname" {
-  zone_id = aws_route53_zone.barzahlen_de.zone_id
-  name    = "cdn"
+  for_each = {
+    "cdn"                                   = "bzcdn-4bb3.kxcdn.com."
+    "l"                                     = "mandrillapp.com."
+    "www"                                   = "d38kw21wqboq8q.cloudfront.net."
+    "autodiscover"                          = "autodiscover.outlook.com."
+    "selector1._domainkey"                  = "selector1-barzahlen-de._domainkey.skrill.onmicrosoft.com."
+    "selector2._domainkey"                  = "selector2-barzahlen-de._domainkey.skrill.onmicrosoft.com."
+    "mte1._domainkey"                       = "dkim1.mandrillapp.com."
+    "mte2._domainkey"                       = "dkim2.mandrillapp.com."
+    "_0a324b422cb11a35b2a18a0e8b487eaf"     = "_0adbc735f1b2b74a1cc9da136df61dc5.mhbtsbpdnt.acm-validations.aws."
+    "_0b1f3c112f42919d910c0e1bc1779c75.www" = "_b0e581ca5fb8633d817e0d8a1ee3c9e8.mhbtsbpdnt.acm-validations.aws."
+  }
+  name    = each.key
   type    = "CNAME"
   ttl     = 3600
-  records = ["bzcdn-4bb3.kxcdn.com."]
-}
-
-# Handle CNAME-record for l.<domain>.<tld>
-resource "aws_route53_record" "barzahlen_de_l_cname" {
-  zone_id = aws_route53_zone.barzahlen_de.zone_id
-  name    = "l"
-  type    = "CNAME"
-  ttl     = 3600
-  records = ["mandrillapp.com."]
-}
-
-# Handle CNAME-record for www.<domain>.<tld>
-resource "aws_route53_record" "barzahlen_de_www_cname" {
-  zone_id = aws_route53_zone.barzahlen_de.zone_id
-  name    = "www"
-  type    = "CNAME"
-  ttl     = 3600
-  records = ["d38kw21wqboq8q.cloudfront.net."]
-}
-
-# Handle CNAME-record for autodiscover.<domain>.<tld>
-resource "aws_route53_record" "barzahlen_de_autodiscover_cname" {
-  zone_id = aws_route53_zone.barzahlen_de.zone_id
-  name    = "autodiscover"
-  type    = "CNAME"
-  ttl     = 3600
-  records = ["autodiscover.outlook.com."]
-}
-
-# Handle CNAME-record for selector1._domainkey.<domain>.<tld>
-resource "aws_route53_record" "barzahlen_de_selector1dkey_cname" {
-  zone_id = aws_route53_zone.barzahlen_de.zone_id
-  name    = "selector1._domainkey"
-  type    = "CNAME"
-  ttl     = 3600
-  records = ["selector1-barzahlen-de._domainkey.skrill.onmicrosoft.com."]
-}
-
-# Handle CNAME-record for selector2._domainkey.<domain>.<tld>
-resource "aws_route53_record" "barzahlen_de_selector2dkey_cname" {
-  zone_id = aws_route53_zone.barzahlen_de.zone_id
-  name    = "selector2._domainkey"
-  type    = "CNAME"
-  ttl     = 3600
-  records = ["selector2-barzahlen-de._domainkey.skrill.onmicrosoft.com."]
-}
-
-# Handle CNAME-record for mte1._domainkey.<domain>.<tld>
-resource "aws_route53_record" "barzahlen_de_mte1dkey_cname" {
-  zone_id = aws_route53_zone.barzahlen_de.zone_id
-  name    = "mte1._domainkey"
-  type    = "CNAME"
-  ttl     = 3600
-  records = ["dkim1.mandrillapp.com."]
-}
-
-# Handle CNAME-record for mte2._domainkey.<domain>.<tld>
-resource "aws_route53_record" "barzahlen_de_mte2dkey_cname" {
-  zone_id = aws_route53_zone.barzahlen_de.zone_id
-  name    = "mte2._domainkey"
-  type    = "CNAME"
-  ttl     = 3600
-  records = ["dkim2.mandrillapp.com."]
-}
-
-# Handle CNAME-record for domain validation in AWS marketing account 849668658165
-resource "aws_route53_record" "barzahlen_de_aws_cname_validation" {
-  zone_id = aws_route53_zone.barzahlen_de.zone_id
-  name    = "_0a324b422cb11a35b2a18a0e8b487eaf"
-  type    = "CNAME"
-  ttl     = 3600
-  records = ["_0adbc735f1b2b74a1cc9da136df61dc5.mhbtsbpdnt.acm-validations.aws."]
-}
-
-# Handle CNAME-record for www domain validation in AWS marketing account 849668658165
-resource "aws_route53_record" "barzahlen_de_www_aws_cname_validation" {
-  zone_id = aws_route53_zone.barzahlen_de.zone_id
-  name    = "_0b1f3c112f42919d910c0e1bc1779c75.www"
-  type    = "CNAME"
-  ttl     = 3600
-  records = ["_b0e581ca5fb8633d817e0d8a1ee3c9e8.mhbtsbpdnt.acm-validations.aws."]
+  records = [each.value]
 }
 
 # Handle MX-record for <domain>.<tld>
